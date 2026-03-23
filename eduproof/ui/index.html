@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VeriChain | Sovereign Proof System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="ambient-bg">
+        <div class="glow-orb"
+            style="top: -10%; right: -10%; background: radial-gradient(circle, rgba(0, 245, 255, 0.15), transparent);">
+        </div>
+        <div class="glow-orb"
+            style="bottom: -10%; left: -10%; background: radial-gradient(circle, rgba(112, 0, 255, 0.15), transparent);">
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">VERICHAIN</div>
+        <div style="color: var(--text-dim); margin-left: 1rem; flex-grow: 1;">Mainnet Protocol v2.0</div>
+
+        <div class="stat-navbar" style="margin-right: 2rem;">
+            <div class="stat-pill">🧿 Nodes: <span>142 Active</span></div>
+            <div class="stat-pill">⛽ Gas: <span>12 Gwei</span></div>
+            <div class="stat-pill">🛡️ Security: <span>Max</span></div>
+        </div>
+
+        <div id="blockchainStatus"
+            style="padding-right: 20px; font-size: 0.7rem; font-weight: 800; font-family: monospace;">
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="hero-section">
+            <span
+                style="color: var(--primary-glow); font-weight: 600; letter-spacing: 3px; font-size: 0.8rem;">SOVEREIGN
+                IDENTITY</span>
+            <h1>Güvenin Yeni <br> <span style="color: var(--secondary-glow)">Dijital Hali.</span></h1>
+            <p>Akademik ve mesleki başarılarınızı blokzincir üzerinde, geri alınamaz ve manipüle edilemez "Sovereign
+                Proof" (SBT) yapılarıyla temsil edin.</p>
+
+            <div style="margin-top: 3rem; display: flex; gap: 2rem;">
+                <div class="stat">
+                    <div style="font-size: 1.5rem; font-weight: 800;">100%</div>
+                    <div style="color: var(--text-dim); font-size: 0.8rem;">Immutable</div>
+                </div>
+                <div class="stat">
+                    <div style="font-size: 1.5rem; font-weight: 800;">ZKP</div>
+                    <div style="color: var(--text-dim); font-size: 0.8rem;">Privacy Ready</div>
+                </div>
+                <div class="stat">
+                    <div style="font-size: 1.5rem; font-weight: 800;">Realtime</div>
+                    <div style="color: var(--text-dim); font-size: 0.8rem;">Verification</div>
+                </div>
+            </div>
+
+            <!-- Activity Feed -->
+            <div class="feed-container" id="activityFeed">
+                <div style="color: #fff; font-weight: 800; margin-bottom: 1rem; font-family: 'Outfit';">⚡ Live Network
+                    Activity</div>
+                <!-- JS will inject here -->
+            </div>
+        </div>
+
+        <div class="action-section">
+            <!-- Tabs Navigation -->
+            <div class="tabs-container"
+                style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 1rem; justify-content: center; transition: all 0.3s; flex-wrap: wrap;">
+                <button class="tab-btn active" onclick="showTab('verify-tab')"
+                    style="background: transparent; color: #fff; border: none; padding: 0.5rem 1rem; cursor: pointer; border-bottom: 2px solid var(--primary-glow); font-weight: 600; font-size: 1rem;">Verify
+                    Proof</button>
+                <button class="tab-btn" onclick="showTab('issue-tab')"
+                    style="background: transparent; color: var(--text-dim); border: none; padding: 0.5rem 1rem; cursor: pointer; border-bottom: 2px solid transparent; font-weight: 600; font-size: 1rem;">Issue
+                    Credential</button>
+                <button class="tab-btn" onclick="showTab('recover-tab')"
+                    style="background: transparent; color: var(--text-dim); border: none; padding: 0.5rem 1rem; cursor: pointer; border-bottom: 2px solid transparent; font-weight: 600; font-size: 1rem;">Wallet
+                    Recovery</button>
+                <button class="tab-btn" onclick="showTab('revoke-tab')"
+                    style="background: transparent; color: #ef4444; border: none; padding: 0.5rem 1rem; cursor: pointer; border-bottom: 2px solid transparent; font-weight: 600; font-size: 1rem;">Revoke
+                    (İptal)</button>
+            </div>
+
+            <!-- Issuer Card -->
+            <div id="issue-tab" class="tab-content" style="display: none; animation: fadeIn 0.5s;">
+                <div class="glass-card" style="margin-bottom: 2rem;">
+                    <h3 style="margin-top: 0; display: flex; align-items: center; gap: 0.5rem;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                        Authorized Issuer Portal
+                    </h3>
+                    <div class="input-group">
+                        <label>Graduate Name</label>
+                        <input type="text" id="gradName" placeholder="Enter full name">
+                    </div>
+                    <div class="input-group">
+                        <label>National ID (T.C. No) - Private</label>
+                        <input type="password" id="tcNo" placeholder="11 haneli T.C. No">
+                        <small style="color: var(--text-dim); font-size: 0.6rem; margin-top: 0.2rem; display: block;">*
+                            Veri
+                            gizliliği için blokzincire sadece parmak izi (hash) olarak yazılır.</small>
+                    </div>
+                    <div class="input-group">
+                        <label>Credential Type (Select Department)</label>
+                        <select id="degree" class="modern-select">
+                            <option value="" disabled selected>Bölüm Seçiniz...</option>
+                            <option value="Bilgisayar Mühendisliği">Bilgisayar Mühendisliği</option>
+                            <option value="Yapay Zeka Mühendisliği">Yapay Zeka Mühendisliği</option>
+                            <option value="İşletme">İşletme</option>
+                            <option value="Hukuk">Hukuk</option>
+                            <option value="Tıp">Tıp</option>
+                            <option value="Mimarlık">Mimarlık</option>
+                            <option value="Elektrik-Elektronik Mühendisliği">Elektrik-Elektronik Mühendisliği</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Target Wallet (SBT Receiver)</label>
+                        <input type="text" id="gradAddress" placeholder="0x protocol address">
+                    </div>
+                    <button class="btn-primary" onclick="mintCredential()">Issue Proof of Success</button>
+                    <div id="mintStatus" class="status-text"></div>
+                </div>
+            </div>
+
+            <!-- Recovery Card -->
+            <div id="recover-tab" class="tab-content" style="display: none; animation: fadeIn 0.5s;">
+                <div class="glass-card" style="margin-bottom: 2rem;">
+                    <h3 style="margin-top: 0; display: flex; align-items: center; gap: 0.5rem;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4">
+                            </path>
+                        </svg>
+                        SBT Wallet Recovery Portal
+                    </h3>
+                    <div class="input-group">
+                        <label>National ID (T.C. No) of Student</label>
+                        <input type="password" id="recTcNo" placeholder="11 haneli T.C. No">
+                    </div>
+                    <div class="input-group">
+                        <label>Old Wallet Address (Lost)</label>
+                        <input type="text" id="oldAddress" placeholder="0x old address">
+                    </div>
+                    <div class="input-group">
+                        <label>New Wallet Address</label>
+                        <input type="text" id="newAddress" placeholder="0x new address">
+                    </div>
+                    <button class="btn-primary" style="background: linear-gradient(135deg, #ef4444, #b91c1c);"
+                        onclick="recoverSBT()">Recover Lost Diplomas</button>
+                    <div id="recoveryStatus" class="status-text"></div>
+                </div>
+            </div>
+
+            <!-- Revoke Card -->
+            <div id="revoke-tab" class="tab-content" style="display: none; animation: fadeIn 0.5s;">
+                <div class="glass-card" style="margin-bottom: 2rem; border-color: rgba(239, 68, 68, 0.3);">
+                    <h3 style="margin-top: 0; display: flex; align-items: center; gap: 0.5rem; color: #ef4444;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                            </path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        Official Diploma Revocation Portal
+                    </h3>
+                    <p style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 1.5rem;">WARNING: This action
+                        permanently invalidates the diploma on the blockchain. It cannot be undone.</p>
+                    <div class="input-group">
+                        <label>SBT Token ID to Revoke</label>
+                        <input type="number" id="revokeTokenId" placeholder="e.g. 1">
+                    </div>
+                    <div class="input-group">
+                        <label>Revocation Reason (On-Chain Audit Log)</label>
+                        <input type="text" id="revokeReason" placeholder="e.g. Plagiarism, Data Entry Error">
+                    </div>
+                    <button class="btn-primary"
+                        style="background: linear-gradient(135deg, #7f1d1d, #ef4444); color: white;"
+                        onclick="revokeSBT()">CRITICAL: Revoke Diploma</button>
+                    <div id="revokeStatus" class="status-text"></div>
+                </div>
+            </div>
+
+            <!-- Verification Card -->
+            <div id="verify-tab" class="tab-content" style="display: block; animation: fadeIn 0.5s;">
+                <div class="glass-card" id="verifyCard">
+                    <div class="scanner-line" id="scanner"></div>
+                    <h3 style="margin-top: 0; display: flex; align-items: center; gap: 0.5rem;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        Universal Proof Scanner
+                    </h3>
+                    <div class="input-group">
+                        <label>Credential ID or Wallet</label>
+                        <input type="text" id="queryId" placeholder="Scan address or ID">
+                    </div>
+                    <button class="btn-primary"
+                        style="background: transparent; border: 1px solid var(--primary-glow); color: var(--primary-glow);"
+                        onclick="verifyCredential()">Begin Cryptographic Scan</button>
+
+                    <div id="resultArea"
+                        style="display: none; margin-top: 2rem; border-top: 1px solid var(--glass-border); padding-top: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="color: var(--primary-glow); font-weight: 800; font-size: 1.2rem;"
+                                    id="resName">
+                                </div>
+                                <div style="color: var(--text-dim); font-size: 0.9rem;" id="resDegree"></div>
+                            </div>
+                            <div
+                                style="background: rgba(0, 245, 255, 0.1); color: var(--primary-glow); padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.7rem; font-weight: 800;">
+                                VERIFIED</div>
+                        </div>
+                        <div style="margin-top: 1rem; font-size: 0.7rem; color: var(--text-dim); font-family: monospace;"
+                            id="resHash"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tab-btn:hover {
+            color: #fff !important;
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+    <script src="contract-info.js"></script>
+    <script>
+        function simulateFeed() {
+            const feed = document.getElementById('activityFeed');
+            const degrees = ["Computer Engineering", "Medicine", "Law", "Business", "Architecture"];
+            const actions = ["Verified", "Minted", "Queried"];
+
+            // Initial items
+            for (let i = 0; i < 3; i++) {
+                addFeedItem(feed, degrees, actions);
+            }
+
+            setInterval(() => {
+                addFeedItem(feed, degrees, actions);
+            }, 3500);
+        }
+
+        function addFeedItem(feed, degrees, actions) {
+            const action = actions[Math.floor(Math.random() * actions.length)];
+            const degree = degrees[Math.floor(Math.random() * degrees.length)];
+            const hash = "0x" + Math.random().toString(16).substr(2, 8) + "...";
+
+            const item = document.createElement('div');
+            item.className = 'feed-item';
+            item.innerHTML = `> [${new Date().toLocaleTimeString()}] <span class="tx">${hash}</span> ${action} a credential for ${degree}`;
+
+            if (feed.children.length > 1) {
+                feed.insertBefore(item, feed.children[1]);
+            } else {
+                feed.appendChild(item);
+            }
+
+            if (feed.children.length > 6) feed.removeChild(feed.lastChild);
+        }
+
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.style.color = 'var(--text-dim)';
+                btn.style.borderBottomColor = 'transparent';
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(tabId).style.display = 'block';
+            const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(btn => btn.getAttribute('onclick').includes(tabId));
+            if (activeBtn) {
+                activeBtn.style.color = '#fff';
+                activeBtn.style.borderBottomColor = 'var(--primary-glow)';
+                activeBtn.classList.add('active');
+            }
+        }
+
+        let provider, signer, contract;
+        const universityPrivateKey = "0x6f2eeb0b12edb7a87f147bb1725010f05eda1aea3a2af6063f92fe53ea251f5a"; // Demo University Account (0)
+
+        async function init() {
+            simulateFeed();
+            try {
+                // Connect to local Ganache node
+                provider = new ethers.JsonRpcProvider("http://localhost:8545");
+
+                // For "University" actions, we use a fixed wallet (Demo)
+                signer = new ethers.Wallet(universityPrivateKey, provider);
+
+                // Contract instance
+                contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+                const network = await provider.getNetwork();
+                console.log("Connected to Real Blockchain:", network.chainId);
+                document.getElementById('blockchainStatus').innerHTML = `<span style="color: var(--primary-glow)">⛓ NODE ONLINE | VERICHAIN PROTOCOL LIVE</span>`;
+                return true;
+            } catch (e) {
+                console.error("Blockchain connection failed:", e);
+                document.getElementById('blockchainStatus').innerHTML = `<span style="color: #ef4444">⚠ NODE OFFLINE (Run docker-compose)</span>`;
+                return false;
+            }
+        }
+
+        async function mintCredential() {
+            const name = document.getElementById('gradName').value;
+            const tcNo = document.getElementById('tcNo').value.trim(); // NEW
+            const degree = document.getElementById('degree').value;
+            const addr = document.getElementById('gradAddress').value.trim();
+
+            if (!name || !tcNo || !degree || !addr) {
+                alert("Please fill all fields.");
+                return;
+            }
+
+            if (tcNo.length !== 11) {
+                alert("T.C. Kimlik Numarası 11 haneli olmalıdır.");
+                return;
+            }
+
+            // --- EKLEME: ADRES DOGRULAMA ---
+            if (!ethers.isAddress(addr)) {
+                alert("Geçersiz Cüzdan Adresi! Lütfen 0x ile başlayan 42 karakterlik tam adresi giriniz.");
+                return;
+            }
+
+            const mintStatus = document.getElementById('mintStatus');
+            mintStatus.innerHTML = `<span style="color: var(--text-dim)">Checking existing credentials...</span>`;
+
+            try {
+                // --- KVKK COMPLIANT HASHING ---
+                const identityHash = ethers.keccak256(ethers.toUtf8Bytes(tcNo));
+                console.log("Generating Privacy Fingerprint (Hash):", identityHash);
+
+                // REAL BLOCKCHAIN CALL (Updated with identityHash)
+                const tx = await contract.mintDiploma(addr, name, degree, "ipfs://dummy_metadata_hash", identityHash);
+                mintStatus.innerHTML = `<span style="color: var(--primary-glow)">Broadcasting Transaction...</span>`;
+
+                const receipt = await tx.wait();
+                mintStatus.innerHTML = `<span style="color: var(--primary-glow)">✓ Tokenized Successfully! TX: ${receipt.hash.substring(0, 16)}...</span>`;
+            } catch (e) {
+                console.error(e);
+                if (e.message.includes("baska bir cuzdan")) {
+                    mintStatus.innerHTML = `<span style="color: #ef4444">⚠ Error: This Identity is already linked to another wallet.</span>`;
+                } else if (e.message.includes("baska bir kimlige")) {
+                    mintStatus.innerHTML = `<span style="color: #ef4444">⚠ Error: This Wallet is already assigned to a different identity.</span>`;
+                } else if (e.message.includes("zaten bu bolumden")) {
+                    mintStatus.innerHTML = `<span style="color: #ef4444">⚠ Error: This wallet already holds a diploma for this degree.</span>`;
+                } else {
+                    mintStatus.innerHTML = `<span style="color: #ef4444">⚠ Blockchain error. Check console.</span>`;
+                }
+            }
+        }
+
+        async function recoverSBT() {
+            const tcNo = document.getElementById('recTcNo').value.trim();
+            const oldAddr = document.getElementById('oldAddress').value.trim();
+            const newAddr = document.getElementById('newAddress').value.trim();
+
+            if (!tcNo || !oldAddr || !newAddr) {
+                alert("Lütfen tüm alanları doldurun.");
+                return;
+            }
+            if (!ethers.isAddress(oldAddr) || !ethers.isAddress(newAddr)) {
+                alert("Geçersiz cüzdan adresi formatı.");
+                return;
+            }
+
+            const recStatus = document.getElementById('recoveryStatus');
+            recStatus.innerHTML = `<span style="color: var(--text-dim)">Checking credentials on chain...</span>`;
+
+            try {
+                const identityHash = ethers.keccak256(ethers.toUtf8Bytes(tcNo));
+                const tx = await contract.recoverWallet(identityHash, oldAddr, newAddr);
+                recStatus.innerHTML = `<span style="color: var(--primary-glow)">Broadcasting Recovery Transaction...</span>`;
+
+                const receipt = await tx.wait();
+                recStatus.innerHTML = `<span style="color: var(--primary-glow)">✓ Recovery Successful! Tokens moved. TX: ${receipt.hash.substring(0, 16)}...</span>`;
+            } catch (e) {
+                console.error(e);
+                recStatus.innerHTML = `<span style="color: #ef4444">⚠ Error: Transaction failed or unauthorized. Check console.</span>`;
+            }
+        }
+
+        async function revokeSBT() {
+            const tId = document.getElementById('revokeTokenId').value.trim();
+            const reason = document.getElementById('revokeReason').value.trim();
+
+            if (!tId || !reason) {
+                alert("Lütfen Token ID ve İptal Sebebini girin.");
+                return;
+            }
+
+            const revStatus = document.getElementById('revokeStatus');
+            revStatus.innerHTML = `<span style="color: var(--text-dim)">Initiating Revocation protocol...</span>`;
+
+            try {
+                // Not: Kontratımızda sebep string'i altyapısı olmadığı için parametre olarak geçmiyoruz, 
+                // ancak prodüksiyonda bu sebep blockchain'e (Event Logs) yazılacaktır.
+                const tx = await contract.revokeDiploma(tId);
+                revStatus.innerHTML = `<span style="color: #ef4444">Broadcasting Revocation Transaction...</span>`;
+
+                const receipt = await tx.wait();
+                revStatus.innerHTML = `<span style="color: #ef4444">✓ Diploma #${tId} Permanently Revoked! TX: ${receipt.hash.substring(0, 16)}...</span>`;
+            } catch (e) {
+                console.error(e);
+                revStatus.innerHTML = `<span style="color: #ef4444">⚠ Error: Transaction failed. Belki zaten iptal edilmiş veya yetkiniz yok.</span>`;
+            }
+        }
+
+        async function verifyCredential() {
+            const query = document.getElementById('queryId').value.trim();
+            const scanner = document.getElementById('scanner');
+            const resultArea = document.getElementById('resultArea');
+
+            if (!query) return;
+
+            // --- EKLEME: KISA ADRES KONTROLU (ENS Hatasini Onlemek Icin) ---
+            if (query.startsWith("0x") && !ethers.isAddress(query) && query.length < 42) {
+                alert("Eksik veya Geçersiz Adres! Lütfen 42 karakterlik tam cüzdan adresini giriniz.");
+                return;
+            }
+
+            scanner.style.display = 'block';
+            resultArea.style.display = 'none';
+            resultArea.innerHTML = '';
+
+            try {
+                let foundIds = [];
+
+                // If it looks like an address, get all tokens for that address
+                if (ethers.isAddress(query)) {
+                    // --- DUZELTME: holderToTokenIds yerine getHolderTokens kullaniliyor ---
+                    const ids = await contract.getHolderTokens(query);
+                    foundIds = ids.map(id => id.toString());
+                } else if (!isNaN(query)) {
+                    // Otherwise treat as Token ID
+                    try {
+                        const owner = await contract.tokenIdToHolder(query);
+                        if (owner !== ethers.ZeroAddress) {
+                            foundIds = [query];
+                        }
+                    } catch (e) { }
+                }
+
+                if (foundIds.length > 0) {
+                    for (const id of foundIds) {
+                        const data = await contract.diplomas(id);
+                        if (data.graduateName !== "") { // Kart her türlü çıkar, sadece isValid kontrolü görseli değiştirir
+                            const isRevoked = !data.isValid;
+                            let cardBorder = isRevoked ? "border-color: rgba(239, 68, 68, 0.6); box-shadow: 0 0 30px rgba(239, 68, 68, 0.2);" : "";
+                            let glowColor = isRevoked ? "#ef4444" : "var(--primary-glow)";
+                            let statusText = isRevoked ? "REVOKED / INVALID" : "VERIFIED ID: " + id;
+                            let stampOverlay = isRevoked ? `<div style="position:absolute; top:40%; left:50%; transform:translate(-50%, -50%) rotate(-15deg); color:rgba(239, 68, 68, 0.8); font-size:3rem; font-weight:900; letter-spacing:8px; border:6px solid rgba(239, 68, 68, 0.8); padding:10px 20px; border-radius:10px; z-index:10; pointer-events:none; white-space:nowrap;">GEÇERSİZ BELGE</div>` : "";
+
+                            const card = `
+                                <div style="margin-bottom: 2rem; position: relative; padding: 2.5rem; border-radius: 1rem; background: linear-gradient(145deg, rgba(20, 20, 30, 0.8), rgba(10, 10, 15, 0.9)); border: 1px solid rgba(0, 245, 255, 0.3); ${cardBorder} text-align: center; overflow: hidden;">
+                                    ${stampOverlay}
+                                    <div style="position: absolute; top: -50px; right: -50px; width: 100px; height: 100px; background: ${glowColor}; filter: blur(50px); opacity: 0.3;"></div>
+                                    <div style="position: absolute; bottom: -50px; left: -50px; width: 100px; height: 100px; background: var(--secondary-glow); filter: blur(50px); opacity: 0.3;"></div>
+                                    
+                                    <div style="font-size: 0.8rem; letter-spacing: 5px; color: var(--text-dim); margin-bottom: 1rem; text-transform: uppercase;">Official Verified Credential</div>
+                                    
+                                    <div style="margin-bottom: 1.5rem;">
+                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="${glowColor}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto;">
+                                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                            <path d="M9 12l2 2 4-4"/>
+                                        </svg>
+                                    </div>
+
+                                    <h2 style="font-size: 2.2rem; margin: 0; color: #fff; font-family: 'Times New Roman', serif; letter-spacing: 2px;">${data.graduateName}</h2>
+                                    <div style="margin: 1.5rem 0; width: 100%; height: 1px; background: linear-gradient(90deg, transparent, rgba(0, 245, 255, 0.5), transparent);"></div>
+                                    
+                                    <div style="color: var(--text-dim); margin-bottom: 0.5rem; font-style: italic;">has successfully completed all requirements for</div>
+                                    <h3 style="font-size: 1.4rem; color: ${glowColor}; margin: 0 0 2.5rem 0;">${data.degree}</h3>
+                                    
+                                    <div style="display: flex; justify-content: space-between; align-items: flex-end; font-size: 0.75rem; color: var(--text-dim); text-align: left;">
+                                        <div>
+                                            <div><strong style="color: #fff">ISSUER:</strong> EduProof Web3 University</div>
+                                            <div><strong style="color: #fff">DATE:</strong> ${new Date(Number(data.timestamp) * 1000).toLocaleDateString()}</div>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <div style="background: rgba(0,0,0,0.5); padding: 3px 8px; border-radius:10px; font-family: monospace; color: ${glowColor}; font-weight:bold;">${statusText}</div>
+                                            <div style="font-family: monospace; font-size: 0.6rem; margin-top: 5px;">${data.identityHash.substring(0, 16)}...</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            resultArea.innerHTML += card;
+                        }
+                    }
+                    setTimeout(() => {
+                        scanner.style.display = 'none';
+                        resultArea.style.display = 'block';
+                    }, 1000);
+                } else {
+                    setTimeout(() => {
+                        scanner.style.display = 'none';
+                        alert("No valid proof found on the VeriChain network.");
+                    }, 1000);
+                }
+            } catch (e) {
+                console.error(e);
+                scanner.style.display = 'none';
+                alert("Blockchain connection error.");
+            }
+        }
+
+        // Initialize on load
+        window.onload = init;
+    </script>
+</body>
+
+</html>
