@@ -1,0 +1,20 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "docker-compose up -d && sleep 3 && node deploy.js && http-server ./ui -p 8080",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "ethers": "^6.7.0",
+    "solc": "^0.8.19"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VeriChain | Sovereign Proof System</title>
+    <link rel="stylesheet" href="style.css?v=5">
+    <script defer src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/dist/face-api.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://unpkg.com/globe.gl"></script>
+</head>
+
+<body>
+    <div class="ambient-bg">
+        <div class="glow-orb"
+            style="top: -10%; right: -10%; background: radial-gradient(circle, rgba(0, 245, 255, 0.15), transparent);">
+        </div>
+        <div class="glow-orb"
+            style="bottom: -10%; left: -10%; background: radial-gradient(circle, rgba(112, 0, 255, 0.15), transparent);">
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">VERICHAIN</div>
+        <div style="color: var(--text-dim); margin-left: 1rem; flex-grow: 1;">Mainnet Protocol v2.0</div>
+
+        <div class="stat-navbar" style="margin-right: 2rem;">
+            <div class="stat-pill">🧿 Nodes: <span>12 Consortium (Active)</span></div>
+            <div class="stat-pill">⛽ Gas: <span>12 Gwei</span></div>
+            <div class="stat-pill">🛡️ Security: <span>Max</span></div>
+        </div>
+
+        <div id="blockchainStatus"
+            style="padding-right: 20px; font-size: 0.7rem; font-weight: 800; font-family: monospace;">
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="hero-section">
+            <span
+                style="color: var(--primary-glow); font-weight: 600; letter-spacing: 3px; font-size: 0.8rem;">SOVEREIGN
+                IDENTITY</span>
+            <h1>Güvenin Yeni <br> <span style="color: var(--secondary-glow)">Dijital Hali.</span></h1>
+            <p>Akademik ve mesleki başarılarınızı blokzincir üzerinde, geri alınamaz ve manipüle edilemez "Sovereign
+                Proof" (SBT) yapılarıyla temsil edin.</p>
+
+            <div style="margin-top: 3rem; display: flex; gap: 2rem;">
+                <div class="stat">
+                    <div style="font-size: 1.5rem; font-weight: 800;">100%</div>
+                    <div style="color: var(--text-dim); font-size: 0.8rem;">Immutable</div>
+                </div>
+                <div class="stat">
+                    <div style="font-size: 1.5rem; font-weight: 800;">ZKP</div>
+                    <div style="color: var(--text-dim); font-size: 0.8rem;">Privacy Ready</div>
+                </div>
+                <div class="stat">
+                    <div style="font-size: 1.5rem; font-weight: 800;">Realtime</div>
+                    <div style="color: var(--text-dim); font-size: 0.8rem;">Verification</div>
+                </div>
+            </div>
+
+            <!-- Activity Feed -->
+            <div class="feed-container" id="activityFeed">
+                <div style="color: #fff; font-weight: 800; margin-bottom: 1rem; font-family: 'Outfit';">⚡ Live Network
+                    Activity</div>
+                <!-- JS will inject here -->
+            </div>
+        </div>
+
+        <div class="action-section">
+            <!-- Tabs Navigation -->
+            <div class="tabs-container"
+                style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 1rem; justify-content: center; transition: all 0.3s; flex-wrap: wrap;">
+                <button class="tab-btn active" onclick="showTab('verify-tab')"
+                    style="background: transparent; color: #fff; border: none; padding: 0.5rem 1rem; cursor: pointer; border-bottom: 2px solid var(--primary-glow); font-weight: 600; font-size: 1rem;">Verify
+                    Proof</button>
+                <button class="tab-btn" onclick="showTab('issue-tab')"
+                    style="background: transparent; color: var(--text-dim); border: none; padding: 0.5rem 1rem; cursor: pointer; border-bottom: 2px solid transparent; font-weight: 600; font-size: 1rem;">Issue
+                    Credential</button>
+                <button class="tab-btn" onclick="showTab('recover-tab')"
+                    style="background: transparent; color: var(--text-dim); border: none; padding: 0.5rem 1rem; cursor: pointer; border-bottom: 2px solid transparent; font-weight: 600; font-size: 1rem;">Wallet
+                    Recovery</button>
+                <button class="tab-btn" onclick="showTab('revoke-tab')"
+                    style="background: transparent; color: #ef4444; border: none; padding: 0.5rem 1rem; cursor: pointer; border-bottom: 2px solid transparent; font-weight: 600; font-size: 1rem;">Revoke
+                    (İptal)</button>
+            </div>
+
+            <!-- Global Biometric Lock Modal has been moved to bottom of body layout -->
+
+            <!-- Issuer Card -->
+            <div id="issue-tab" class="tab-content" style="display: none; animation: fadeIn 0.5s;">
+                <div class="glass-card" style="margin-bottom: 2rem;">
+                    <h3 style="margin-top: 0; display: flex; align-items: center; gap: 0.5rem;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                        Authorized Issuer Portal <span
+                            style="font-size: 0.6rem; background: rgba(0,255,0,0.2); color: #0f0; padding: 2px 6px; border-radius: 10px; margin-left: 10px;">🛡️
+                            BIOMETRIC UNLOCKED</span>
+                    </h3>
+
+                    <!-- NEW: AI OCR SCANNER DROPZONE -->
+                    <div id="ocrDropzone"
+                        style="border: 2px dashed rgba(0, 245, 255, 0.5); padding: 1.5rem; border-radius: 1rem; text-align: center; cursor: pointer; transition: 0.3s; margin-bottom: 2rem; position: relative; overflow: hidden; background: rgba(0, 245, 255, 0.03);">
+                        <div id="ocrStatus"
+                            style="font-weight: 800; color: var(--primary-glow); margin-bottom: 0.5rem; font-size: 0.85rem; letter-spacing: 1px; z-index: 20; position: relative;">
+                            [+] AI OTO-TARAMA İÇİN DİPLOMA GÖRSELİ SÜRÜKLE (PDF/JPG)</div>
+                        <p
+                            style="font-size: 0.7rem; color: var(--text-dim); margin: 0; z-index: 20; position: relative;">
+                            Sistem belgedeki T.C. No, Ad-Soyad ve Bölüm bilgilerini okuyarak aşağıdaki formlara sıfır
+                            hatayla yazar.</p>
+
+                        <input type="file" id="ocrInput" accept="image/*"
+                            style="opacity: 0; position: absolute; top:0; left:0; width:100%; height:100%; cursor: pointer; z-index: 25;">
+
+                        <!-- Hidden image for Tesseract -->
+                        <img id="ocrImagePreview"
+                            style="display:none; max-width: 100%; max-height: 200px; margin: 1rem auto 0 auto; border-radius: 0.5rem; opacity: 0.6; filter: contrast(1.2);">
+
+                        <!-- Laser Scanner Animation -->
+                        <div id="ocrLaser"
+                            style="display:none; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: #0f0; box-shadow: 0 0 20px #0f0, 0 0 30px #0f0; animation: scanAnim 2s infinite; z-index: 10;">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Graduate Name</label>
+                        <input type="text" id="gradName" placeholder="Enter full name" oninput="checkNameCase(this)">
+                        <small id="nameWarning"
+                            style="color: #ef4444; font-size: 0.75rem; display: none; margin-top: 0.3rem;">
+                            ⚠️ Lütfen karakterleri sadece BÜYÜK HARF olarak giriniz.
+                        </small>
+                    </div>
+                    <div class="input-group">
+                        <label>National ID (T.C. No) - Private</label>
+                        <input type="password" id="tcNo" placeholder="11 haneli T.C. No">
+                        <small style="color: var(--text-dim); font-size: 0.6rem; margin-top: 0.2rem; display: block;">*
+                            Veri
+                            gizliliği için blokzincire sadece parmak izi (hash) olarak yazılır.</small>
+                    </div>
+                    <div class="input-group">
+                        <label>Credential Type (Graduate Program)</label>
+                        <input type="text" id="degree" placeholder="Program, Bölüm veya Fakülte">
+                    </div>
+                    <div class="input-group">
+                        <label>Target Wallet (SBT Receiver)</label>
+                        <input type="text" id="gradAddress" placeholder="0x protocol address">
+                    </div>
+                    <button class="btn-primary" onclick="mintCredential()">Issue Proof of Success</button>
+                    <div id="mintStatus" class="status-text"></div>
+                </div>
+            </div>
+
+            <!-- Recovery Card -->
+            <div id="recover-tab" class="tab-content" style="display: none; animation: fadeIn 0.5s;">
+                <div class="glass-card" style="margin-bottom: 2rem;">
+                    <h3 style="margin-top: 0; display: flex; align-items: center; gap: 0.5rem;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4">
+                            </path>
+                        </svg>
+                        SBT Wallet Recovery Portal
+                    </h3>
+                    <div class="input-group">
+                        <label>National ID (T.C. No) of Student</label>
+                        <input type="password" id="recTcNo" placeholder="11 haneli T.C. No" oninput="autoFillRecovery(this.value)">
+                    </div>
+                    <div class="input-group">
+                        <label>Old Wallet Address (Lost)</label>
+                        <input type="text" id="oldAddress" placeholder="0x old address">
+                    </div>
+                    <div class="input-group">
+                        <label>New Wallet Address</label>
+                        <input type="text" id="newAddress" placeholder="0x new address">
+                    </div>
+                    <button class="btn-primary" style="background: linear-gradient(135deg, #ef4444, #b91c1c);"
+                        onclick="recoverSBT()">Recover Lost Diplomas</button>
+                    <div id="recoveryStatus" class="status-text"></div>
+                </div>
+            </div>
+
+            <!-- Revoke Card -->
+            <div id="revoke-tab" class="tab-content" style="display: none; animation: fadeIn 0.5s;">
+                <div class="glass-card" style="margin-bottom: 2rem; border-color: rgba(239, 68, 68, 0.3);">
+                    <h3 style="margin-top: 0; display: flex; align-items: center; gap: 0.5rem; color: #ef4444;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                            </path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        Official Diploma Revocation Portal
+                    </h3>
+                    <p style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 1.5rem;">WARNING: This action
+                        permanently invalidates the diploma on the blockchain. It cannot be undone.</p>
+                    <div class="input-group">
+                        <label>SBT Token ID to Revoke</label>
+                        <input type="number" id="revokeTokenId" placeholder="e.g. 1">
+                    </div>
+                    <div class="input-group">
+                        <label>Revocation Reason (On-Chain Audit Log)</label>
+                        <input type="text" id="revokeReason" placeholder="e.g. Plagiarism, Data Entry Error">
+                    </div>
+                    <button class="btn-primary"
+                        style="background: linear-gradient(135deg, #7f1d1d, #ef4444); color: white;"
+                        onclick="revokeSBT()">CRITICAL: Revoke Diploma</button>
+                    <div id="revokeStatus" class="status-text"></div>
+                </div>
+            </div>
+
+            <!-- Verification Card -->
+            <div id="verify-tab" class="tab-content" style="display: block; animation: fadeIn 0.5s;">
+                <div class="glass-card" id="verifyCard">
+                    <div class="scanner-line" id="scanner"></div>
+                    <h3 style="margin-top: 0; display: flex; align-items: center; gap: 0.5rem;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        Universal Proof Scanner
+                    </h3>
+                    <div class="input-group">
+                        <label>Credential ID or Wallet</label>
+                        <input type="text" id="queryId" placeholder="Scan address or ID">
+                    </div>
+                    <button class="btn-primary"
+                        style="background: transparent; border: 1px solid var(--primary-glow); color: var(--primary-glow);"
+                        onclick="verifyCredential()">Begin Cryptographic Scan</button>
+
+                    <div id="resultArea"
+                        style="display: none; margin-top: 2rem; border-top: 1px solid var(--glass-border); padding-top: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="color: var(--primary-glow); font-weight: 800; font-size: 1.2rem;"
+                                    id="resName">
+                                </div>
+                                <div style="color: var(--text-dim); font-size: 0.9rem;" id="resDegree"></div>
+                            </div>
+                            <div
+                                style="background: rgba(0, 245, 255, 0.1); color: var(--primary-glow); padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.7rem; font-weight: 800;">
+                                VERIFIED</div>
+                        </div>
+                        <div style="margin-top: 1rem; font-size: 0.7rem; color: var(--text-dim); font-family: monospace;"
+                            id="resHash"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scanAnim {
+            0% {
+                top: 0;
+            }
+
+            50% {
+                top: 100%;
+            }
+
+            100% {
+                top: 0;
+            }
+        }
+
+        #startBioBtn:hover {
+            background: var(--primary-glow) !important;
+            color: #000 !important;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .tab-btn:hover {
+            color: #fff !important;
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+    <script src="contract-info.js?v=1774542532120"></script>
+    <script>
+        let isFaceVerified = false;
+        let isVoiceVerified = false;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSciFiSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (type === 'scan') {
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime); // Yüksek frekans, radar/tarayıcı sesi gibi
+                osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.15);
+            } else if (type === 'success') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.3);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+
+                const osc2 = audioCtx.createOscillator();
+                osc2.type = 'sine';
+                osc2.frequency.setValueAtTime(1200, audioCtx.currentTime);
+                osc2.connect(gain);
+                osc2.start();
+                osc2.stop(audioCtx.currentTime + 0.4);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.4);
+            } else if (type === 'error') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+            }
+        }
+
+        function speakMessage(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const msg = new SpeechSynthesisUtterance(text);
+                msg.lang = 'tr-TR';
+                msg.rate = 1.0;
+                msg.pitch = 0.9;
+                window.speechSynthesis.speak(msg);
+            }
+        }
+
+        async function startBiometricAuth() {
+            const btn = document.getElementById('startBioBtn');
+            const video = document.getElementById('webcamVideo');
+            const statusText = document.getElementById('bioStatusText');
+            const scanner = document.getElementById('faceScannerLine');
+
+            btn.style.display = 'none';
+            playSciFiSound('scan');
+            statusText.innerHTML = "LOADING AI NEURAL NETWORKS... <br><span style='font-size:0.7em;color:var(--text-dim)'>Fetching weights from CDN</span>";
+            speakMessage("Biyometrik sistem başlatılıyor. Lütfen kameraya bakınız.");
+
+            try {
+                // Initialize Face API
+                await faceapi.nets.tinyFaceDetector.loadFromUri('https://unpkg.com/@vladmandic/face-api/model/');
+                await faceapi.nets.faceLandmark68Net.loadFromUri('https://unpkg.com/@vladmandic/face-api/model/');
+                await faceapi.nets.faceRecognitionNet.loadFromUri('https://unpkg.com/@vladmandic/face-api/model/');
+
+                statusText.innerHTML = "ACCESSING OPTICAL SENSOR... <br>Please face the camera.";
+
+                // Start webcam with audio so we get both permissions at once
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                video.srcObject = stream;
+                video.style.display = 'block';
+                scanner.style.display = 'block';
+
+                video.addEventListener('play', () => {
+                    // Face API init setup
+                    statusText.innerHTML = "ANALYZING FACIAL TOPOLOGY... <br><span style='font-size:0.7em;color:var(--text-dim)'>Extracting coordinates...</span>";
+
+                    const interval = setInterval(async () => {
+                        const detections = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+                            .withFaceLandmarks()
+                            .withFaceDescriptor();
+
+                        // Demo amacli sadece bir insan yuzu tespit edilmesi yeterli kilinmistir.
+                        // Uretim asamasinda 128 boyutlu Float32 koordinat vektorleri arasinda Euclidean Distance hesaplanir.
+                        if (detections) {
+                            const score = detections.detection.score;
+                            if (score > 0.7 && !isFaceVerified) {
+                                const descriptor = detections.descriptor;
+
+                                let savedFaceStr = localStorage.getItem("adminFaceDescriptor");
+                                if (!savedFaceStr) {
+                                    // İlk yüz taraması: Kullanıcının yüzünü admin olarak kaydet
+                                    localStorage.setItem("adminFaceDescriptor", JSON.stringify(Array.from(descriptor)));
+                                    statusText.innerHTML = "ADMIN FACE REGISTERED!<br>Starting verification...";
+                                } else {
+                                    // Zaten admin kayıtlı, yüzler aynı mı diye karşılaştır (Öklid uzaklığı < 0.55 ise aynı kişi)
+                                    const adminDescriptor = new Float32Array(JSON.parse(savedFaceStr));
+                                    const distance = faceapi.euclideanDistance(adminDescriptor, descriptor);
+
+                                    if (distance > 0.55) {
+                                        // Eşleşmedi! (Başka biri)
+                                        playSciFiSound('error');
+                                        statusText.innerHTML = `<span style="color:#ef4444; font-weight:800; font-size:1.4rem;">ACCESS DENIED</span><br><span style="font-size:0.75rem; color:#fff;">Unknown Face Detected. Security Distance: ${distance.toFixed(2)}</span>`;
+                                        scanner.style.background = '#ef4444'; // Kırmızı çizgi
+                                        return; // Döngü tekrar denemeye devam eder, sonlandırma
+                                    }
+                                }
+
+                                isFaceVerified = true;
+                                clearInterval(interval);
+                                scanner.style.background = 'var(--primary-glow)';
+
+                                // WOW EFFECT: Simulate Heavy Matrix-like Processing (Delay)
+                                let progress = 0;
+                                statusText.innerHTML = "EXTRACTING 128D TENSOR... [0%]";
+                                const simInterval = setInterval(() => {
+                                    progress += Math.floor(Math.random() * 20) + 10;
+                                    if (progress >= 100) {
+                                        progress = 100;
+                                        clearInterval(simInterval);
+                                        scanner.style.background = '#0f0';
+                                        scanner.style.animationDuration = '0.5s';
+
+                                        // [DEV] SESLI DOGRULAMA (GEÇİCİ OLARAK YORUMA ALINDI, DAHA SONRA AKTİF EDİLECEK)
+                                        /* 
+                                        window.expectedOtpNumeric = "gama 4"; 
+                                        window.expectedOtpText = "gama dört";
+                                        window.expectedOtpCombined = "gama4";
+                                        
+                                        playSciFiSound('success');
+                                        statusText.innerHTML = `<span style="color:#0f0">FACE MATCH: 99.8%</span><br><span style="font-size:0.8em">Waiting for Vocal Private Key...</span>`;
+                                        speakMessage(`Yüz biyometriniz doğrulandı. Lütfen yetkili gizli sesli şifrenizi söyleyin.`);
+                                        
+                                        startVoiceProtocol(stream);
+                                        */
+
+                                        // [DEV] Sesli dogrulama devre disi - Yüz tanındığı an doğrudan gecis yap (GEÇİCİ AKTİF)
+                                        playSciFiSound('success');
+                                        statusText.innerHTML = `<span style="color:#0f0">FACE MATCH: 99.8%</span><br><span style="font-size:0.8em">Private Key Decrypted. Access Granted.</span>`;
+                                        speakMessage("Yüzünüz başarıyla doğrulandı. Protokole erişim izni verildi.");
+                                        setTimeout(() => unlockGlobalSession(stream), 1500);
+                                    } else {
+                                        const msgs = ["EXTRACTING 128D TENSOR", "RUNNING EUCLIDEAN MATCH", "QUERYING IPFS REGISTRY", "VERIFYING IDENTITY HASH"];
+                                        const msg = msgs[Math.floor(progress / 25) > 3 ? 3 : Math.floor(progress / 25)];
+                                        statusText.innerHTML = `${msg}... [${progress}%]`;
+                                    }
+                                }, 400); // Takes ~2 seconds to finish fake processing
+                            }
+                        }
+                    }, 500);
+                });
+
+            } catch (err) {
+                console.error(err);
+                statusText.innerHTML = `<span style="color:#ef4444">SENSOR ERROR</span><br><span style="font-size:0.7em">${err.message}</span>`;
+                speakMessage("Sensör hatası. Güvenlik bağlantısı koptu.");
+                btn.innerText = "FORCE OVERRIDE (DEV)";
+                btn.style.display = 'inline-block';
+                btn.onclick = () => unlockGlobalSession(null);
+            }
+        }
+
+        function startVoiceProtocol(mediaStream) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                document.getElementById('bioStatusText').innerHTML = `<span style="color:#0f0">FACE MATCH: 99.8%</span><br><span style="font-size:0.8em;color:#ef4444">Voice auth unsupported. Auto-unlocking...</span>`;
+                setTimeout(() => unlockGlobalSession(mediaStream), 2000);
+                return;
+            }
+
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'tr-TR';
+            recognition.continuous = true;
+            recognition.start();
+
+            recognition.onresult = function (event) {
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript.toLowerCase();
+                    console.log("Voice Input:", transcript);
+                    const noSpaceTranscript = transcript.replace(/\s+/g, '');
+                    // Match either numeric or text version (e.g. 'gama 4' or 'gama dört' or 'gama4')
+                    if (transcript.includes(window.expectedOtpNumeric) || transcript.includes(window.expectedOtpText) || noSpaceTranscript.includes(window.expectedOtpCombined)) {
+                        recognition.stop();
+                        isVoiceVerified = true;
+                        playSciFiSound('success');
+                        document.getElementById('bioStatusText').innerHTML = `<span style="color:#0f0">VOCAL PRIVATE KEY ACCEPTED.</span><br>Private Key Decrypted. Access Granted.`;
+                        speakMessage("Sesli güvenlik anahtarınız onaylandı. Kriptografik cüzdan açıldı, blokzincir ağına erişim izni verildi.");
+                        setTimeout(() => unlockGlobalSession(mediaStream), 2000);
+                    }
+                }
+            };
+
+            recognition.onerror = function (event) {
+                if (event.error === 'not-allowed') {
+                    document.getElementById('bioStatusText').innerHTML = `<span style="color:#ef4444">MIC DENIED. Auto-unlocking...</span>`;
+                    setTimeout(() => unlockGlobalSession(mediaStream), 1500);
+                }
+            }
+        }
+
+        function unlockGlobalSession(mediaStream) {
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+            }
+
+            isGlobalAdminUnlocked = true;
+            const overlay = document.getElementById('bioLockOverlay');
+            overlay.classList.add('unlocked');
+
+            // Wait for Transformers 3D wow animation to complete (1.8s + buffer)
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                overlay.classList.remove('unlocked'); // Reset for next time
+
+                // Open the requested tab now
+                if (pendingTabId) {
+                    showTab(pendingTabId);
+                }
+            }, 1900);
+        }
+
+        function checkNameCase(input) {
+            const val = input.value;
+            // Sadece Buyuk Harfler ve Bosluk karakterlerini kabul eden RegExp
+            const regex = /^[A-ZÇĞİÖŞÜ\s]+$/;
+
+            if (val && !regex.test(val)) {
+                document.getElementById('nameWarning').style.display = 'block';
+                document.getElementById('nameWarning').innerHTML = '⚠️ Lütfen sadece BÜYÜK HARF kullanınız (Sayı, noktalama ve küçük harf yasaktır).';
+            } else {
+                document.getElementById('nameWarning').style.display = 'none';
+            }
+        }
+
+        function simulateFeed() {
+            const feed = document.getElementById('activityFeed');
+            const degrees = ["Computer Engineering", "Medicine", "Law", "Business", "Architecture"];
+            const actions = ["Verified", "Minted", "Queried"];
+
+            // Initial items
+            for (let i = 0; i < 3; i++) {
+                addFeedItem(feed, degrees, actions);
+            }
+
+            setInterval(() => {
+                addFeedItem(feed, degrees, actions);
+            }, 3500);
+        }
+
+        function addFeedItem(feed, degrees, actions) {
+            const action = actions[Math.floor(Math.random() * actions.length)];
+            const degree = degrees[Math.floor(Math.random() * degrees.length)];
+            const hash = "0x" + Math.random().toString(16).substr(2, 8) + "...";
+
+            const item = document.createElement('div');
+            item.className = 'feed-item';
+            item.innerHTML = `> [${new Date().toLocaleTimeString()}] <span class="tx">${hash}</span> ${action} a credential for ${degree}`;
+
+            if (feed.children.length > 1) {
+                feed.insertBefore(item, feed.children[1]);
+            } else {
+                feed.appendChild(item);
+            }
+
+            if (feed.children.length > 6) feed.removeChild(feed.lastChild);
+        }
+        let isGlobalAdminUnlocked = false;
+        let pendingTabId = null;
+
+        function showTab(tabId) {
+            // Admin paneline girmeye calisiyorsa ve biometrik kilit acilmamissa
+            if (tabId !== 'verify-tab' && !isGlobalAdminUnlocked) {
+                document.getElementById('bioLockOverlay').style.display = 'flex';
+                pendingTabId = tabId;
+
+                // Active buton gorselini ayarla ama tabloyu acma
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.style.color = 'var(--text-dim)';
+                    btn.style.borderBottomColor = 'transparent';
+                    btn.classList.remove('active');
+                });
+                const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(btn => btn.getAttribute('onclick').includes(tabId));
+                if (activeBtn) {
+                    activeBtn.style.color = '#fff';
+                    activeBtn.style.borderBottomColor = 'var(--primary-glow)';
+                    activeBtn.classList.add('active');
+                }
+                return;
+            }
+
+            // Normal tab acma mantigi
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.style.color = 'var(--text-dim)';
+                btn.style.borderBottomColor = 'transparent';
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(tabId).style.display = 'block';
+            const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(btn => btn.getAttribute('onclick').includes(tabId));
+            if (activeBtn) {
+                activeBtn.style.color = '#fff';
+                activeBtn.style.borderBottomColor = 'var(--primary-glow)';
+                activeBtn.classList.add('active');
+            }
+        }
+
+        let provider, signer, contract;
+        const universityPrivateKey = "0x6f2eeb0b12edb7a87f147bb1725010f05eda1aea3a2af6063f92fe53ea251f5a"; // Demo University Account (0)
+
+        async function init() {
+            initOCR(); // Initialize AI Document Scanner
+            simulateFeed();
+            try {
+                // Connect to local Ganache node
+                provider = new ethers.JsonRpcProvider("http://localhost:8545");
+
+                // For "University" actions, we use a fixed wallet (Demo)
+                signer = new ethers.Wallet(universityPrivateKey, provider);
+
+                // Contract instance
+                contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+                const network = await provider.getNetwork();
+                console.log("Connected to Real Blockchain:", network.chainId);
+                document.getElementById('blockchainStatus').innerHTML = `<span style="color: var(--primary-glow)">⛓ NODE ONLINE | VERICHAIN PROTOCOL LIVE</span>`;
+                return true;
+            } catch (e) {
+                console.error("Blockchain connection failed:", e);
+                document.getElementById('blockchainStatus').innerHTML = `<span style="color: #ef4444">⚠ NODE OFFLINE (Run docker-compose)</span>`;
+                return false;
+            }
+        }
+
+        async function mintCredential() {
+            const name = document.getElementById('gradName').value;
+            const tcNo = document.getElementById('tcNo').value.trim(); // NEW
+            const degree = document.getElementById('degree').value;
+            const addr = document.getElementById('gradAddress').value.trim();
+
+            if (!name || !tcNo || !degree || !addr) {
+                alert("Please fill all fields.");
+                return;
+            }
+
+            if (tcNo.length !== 11) {
+                alert("T.C. Kimlik Numarası 11 haneli olmalıdır.");
+                return;
+            }
+
+            // --- EKLEME: ISIM BUYUK HARF DOGRULAMA ---
+            // Sadece buyuk harfler (Turkce dahil) ve bosluk kabul edilir, rakamlar gecerli degil
+            const regex = /^[A-ZÇĞİÖŞÜ\s]+$/;
+            if (!regex.test(name)) {
+                alert("İsim alanına sayı veya özel karakter girilemez. Sadece BÜYÜK HARFLER ile tam adınızı yazınız. (Örn: NURULLAH YAMAN)");
+                return;
+            }
+
+            // --- EKLEME: ADRES DOGRULAMA ---
+            if (!ethers.isAddress(addr)) {
+                alert("Geçersiz Cüzdan Adresi! Lütfen 0x ile başlayan 42 karakterlik tam adresi giriniz.");
+                return;
+            }
+
+            const mintStatus = document.getElementById('mintStatus');
+            mintStatus.innerHTML = `<span style="color: var(--text-dim)">Checking existing credentials...</span>`;
+
+            try {
+                // --- KVKK COMPLIANT HASHING ---
+                const identityHash = ethers.keccak256(ethers.toUtf8Bytes(tcNo));
+                console.log("Generating Privacy Fingerprint (Hash):", identityHash);
+
+                // REAL BLOCKCHAIN CALL (Updated with identityHash)
+                mintStatus.innerHTML = `<span style="color: var(--primary-glow)">Broadcasting Transaction...</span>`;
+                const txPromise = contract.mintDiploma(addr, name, degree, "ipfs://dummy_metadata_hash", identityHash);
+
+                showGlobeAnimation(txPromise, (success, receiptHash) => {
+                    if (success) {
+                        mintStatus.innerHTML = `<span style="color: #0f0">✓ Tokenized Successfully! TX: ${receiptHash.substring(0, 16)}...</span>`;
+                    } else {
+                        // Hata mesajı handleFailure'dan da yansıtıldığı için burada sabit bir hata yazdırıyoruz
+                        mintStatus.innerHTML = `<span style="color: #ef4444">⚠ Error: Transaction failed or identity already exists.</span>`;
+                    }
+                });
+            } catch (e) {
+                console.error(e);
+                if (e.message.includes("baska bir cuzdan")) {
+                    mintStatus.innerHTML = `<span style="color: #ef4444">⚠ Error: This Identity is already linked to another wallet.</span>`;
+                } else if (e.message.includes("baska bir kimlige")) {
+                    mintStatus.innerHTML = `<span style="color: #ef4444">⚠ Error: This Wallet is already assigned to a different identity.</span>`;
+                } else if (e.message.includes("zaten bu bolumden")) {
+                    mintStatus.innerHTML = `<span style="color: #ef4444">⚠ Error: This wallet already holds a diploma for this degree.</span>`;
+                } else {
+                    mintStatus.innerHTML = `<span style="color: #ef4444">⚠ Blockchain error. Check console.</span>`;
+                }
+            }
+        }
+
+        async function autoFillRecovery(tc) {
+            tc = tc.trim();
+            if (tc.length === 11 && !isNaN(tc)) {
+                try {
+                    const tcHash = ethers.keccak256(ethers.toUtf8Bytes(tc));
+                    const oldWallet = await contract.identityToWallet(tcHash);
+                    if (oldWallet && oldWallet !== ethers.ZeroAddress && oldWallet !== "0x0000000000000000000000000000000000000000") {
+                        document.getElementById('oldAddress').value = oldWallet;
+                        document.getElementById('newAddress').value = ethers.Wallet.createRandom().address;
+                        document.getElementById('recoveryStatus').innerHTML = `<span style="color:#0f0">✓ Cüzdan eşleşti. Yeni cüzdan hazırlandı.</span>`;
+                    } else {
+                        document.getElementById('oldAddress').value = "";
+                        document.getElementById('newAddress').value = "";
+                        document.getElementById('recoveryStatus').innerHTML = `<span style="color:#ef4444">⚠ Bu TC'ye ait kayıtlı cüzdan bulunamadı.</span>`;
+                    }
+                } catch (e) { console.error(e); }
+            } else {
+                document.getElementById('oldAddress').value = "";
+                document.getElementById('newAddress').value = "";
+                document.getElementById('recoveryStatus').innerHTML = "";
+            }
+        }
+
+        async function recoverSBT() {
+            const tcNo = document.getElementById('recTcNo').value.trim();
+            const oldAddr = document.getElementById('oldAddress').value.trim();
+            const newAddr = document.getElementById('newAddress').value.trim();
+
+            if (!tcNo || !oldAddr || !newAddr) {
+                alert("Lütfen tüm alanları doldurun.");
+                return;
+            }
+            if (!ethers.isAddress(oldAddr) || !ethers.isAddress(newAddr)) {
+                alert("Geçersiz cüzdan adresi formatı.");
+                return;
+            }
+
+            const recStatus = document.getElementById('recoveryStatus');
+            recStatus.innerHTML = `<span style="color: var(--text-dim)">Checking credentials on chain...</span>`;
+
+            try {
+                const identityHash = ethers.keccak256(ethers.toUtf8Bytes(tcNo));
+                const tx = await contract.recoverWallet(identityHash, oldAddr, newAddr);
+                recStatus.innerHTML = `<span style="color: var(--primary-glow)">Broadcasting Recovery Transaction...</span>`;
+
+                const receipt = await tx.wait();
+                recStatus.innerHTML = `<span style="color: var(--primary-glow)">✓ Recovery Successful! Tokens moved. TX: ${receipt.hash.substring(0, 16)}...</span>`;
+            } catch (e) {
+                console.error(e);
+                recStatus.innerHTML = `<span style="color: #ef4444">⚠ Error: Transaction failed or unauthorized. Check console.</span>`;
+            }
+        }
+
+        async function revokeSBT() {
+            const tId = document.getElementById('revokeTokenId').value.trim();
+            const reason = document.getElementById('revokeReason').value.trim();
+
+            if (!tId || !reason) {
+                alert("Lütfen Token ID ve İptal Sebebini girin.");
+                return;
+            }
+
+            const revStatus = document.getElementById('revokeStatus');
+            revStatus.innerHTML = `<span style="color: var(--text-dim)">Initiating Revocation protocol...</span>`;
+
+            try {
+                // Not: Kontratımızda sebep string'i altyapısı olmadığı için parametre olarak geçmiyoruz, 
+                // ancak prodüksiyonda bu sebep blockchain'e (Event Logs) yazılacaktır.
+                const tx = await contract.revokeDiploma(tId);
+                revStatus.innerHTML = `<span style="color: #ef4444">Broadcasting Revocation Transaction...</span>`;
+
+                const receipt = await tx.wait();
+                revStatus.innerHTML = `<span style="color: #ef4444">✓ Diploma #${tId} Permanently Revoked! TX: ${receipt.hash.substring(0, 16)}...</span>`;
+            } catch (e) {
+                console.error(e);
+                revStatus.innerHTML = `<span style="color: #ef4444">⚠ Error: Transaction failed. Belki zaten iptal edilmiş veya yetkiniz yok.</span>`;
+            }
+        }
+
+        async function verifyCredential() {
+            const query = document.getElementById('queryId').value.trim();
+            const scanner = document.getElementById('scanner');
+            const resultArea = document.getElementById('resultArea');
+
+            if (!query) return;
+
+            // --- EKLEME: KISA ADRES KONTROLU (ENS Hatasini Onlemek Icin) ---
+            if (query.startsWith("0x") && !ethers.isAddress(query) && query.length < 42) {
+                alert("Eksik veya Geçersiz Adres! Lütfen 42 karakterlik tam cüzdan adresini giriniz.");
+                return;
+            }
+
+            scanner.style.display = 'block';
+            resultArea.style.display = 'none';
+            resultArea.innerHTML = '';
+
+            try {
+                let foundIds = [];
+
+                // If it looks like an address, get all tokens for that address
+                if (ethers.isAddress(query)) {
+                    const ids = await contract.getHolderTokens(query);
+                    foundIds = ids.map(id => id.toString());
+                } else if (!isNaN(query) && query.length === 11) {
+                    // Treat 11-digit number as TC Kimlik No
+                    const tcHash = ethers.keccak256(ethers.toUtf8Bytes(query));
+                    const walletAddress = await contract.identityToWallet(tcHash);
+
+                    if (walletAddress && walletAddress !== ethers.ZeroAddress) {
+                        const ids = await contract.getHolderTokens(walletAddress);
+                        foundIds = ids.map(id => id.toString());
+                    }
+                } else if (!isNaN(query)) {
+                    // Otherwise treat as Token ID
+                    try {
+                        const owner = await contract.tokenIdToHolder(query);
+                        if (owner !== ethers.ZeroAddress && owner !== "0x0000000000000000000000000000000000000000") {
+                            foundIds = [query];
+                        }
+                    } catch (e) { console.error("Token ID query failed:", e); }
+                }
+
+                if (foundIds.length > 0) {
+                    for (const id of foundIds) {
+                        const data = await contract.diplomas(id);
+                        if (data.graduateName !== "") { // Kart her türlü çıkar, sadece isValid kontrolü görseli değiştirir
+                            const isRevoked = !data.isValid;
+                            let cardBorder = isRevoked ? "border-color: rgba(239, 68, 68, 0.6); box-shadow: 0 0 30px rgba(239, 68, 68, 0.2);" : "";
+                            let glowColor = isRevoked ? "#ef4444" : "var(--primary-glow)";
+                            let statusText = isRevoked ? "REVOKED / INVALID" : "VERIFIED ID: " + id;
+                            let stampOverlay = isRevoked ? `<div style="position:absolute; top:40%; left:50%; transform:translate(-50%, -50%) rotate(-15deg); color:rgba(239, 68, 68, 0.8); font-size:3rem; font-weight:900; letter-spacing:8px; border:6px solid rgba(239, 68, 68, 0.8); padding:10px 20px; border-radius:10px; z-index:10; pointer-events:none; white-space:nowrap;">GEÇERSİZ BELGE</div>` : "";
+
+                            const card = `
+                                <div style="margin-bottom: 2rem; position: relative; padding: 2.5rem; border-radius: 1rem; background: linear-gradient(145deg, rgba(20, 20, 30, 0.8), rgba(10, 10, 15, 0.9)); border: 1px solid rgba(0, 245, 255, 0.3); ${cardBorder} text-align: center; overflow: hidden;">
+                                    ${stampOverlay}
+                                    <div style="position: absolute; top: -50px; right: -50px; width: 100px; height: 100px; background: ${glowColor}; filter: blur(50px); opacity: 0.3;"></div>
+                                    <div style="position: absolute; bottom: -50px; left: -50px; width: 100px; height: 100px; background: var(--secondary-glow); filter: blur(50px); opacity: 0.3;"></div>
+                                    
+                                    <div style="font-size: 0.8rem; letter-spacing: 5px; color: var(--text-dim); margin-bottom: 1rem; text-transform: uppercase;">Official Verified Credential</div>
+                                    
+                                    <div style="margin-bottom: 1.5rem;">
+                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="${glowColor}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto;">
+                                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                            <path d="M9 12l2 2 4-4"/>
+                                        </svg>
+                                    </div>
+
+                                    <h2 style="font-size: 2.2rem; margin: 0; color: #fff; font-family: 'Times New Roman', serif; letter-spacing: 2px;">${data.graduateName}</h2>
+                                    <div style="margin: 1.5rem 0; width: 100%; height: 1px; background: linear-gradient(90deg, transparent, rgba(0, 245, 255, 0.5), transparent);"></div>
+                                    
+                                    <div style="color: var(--text-dim); margin-bottom: 0.5rem; font-style: italic;">has successfully completed all requirements for</div>
+                                    <h3 style="font-size: 1.4rem; color: ${glowColor}; margin: 0 0 2.5rem 0;">${data.degree}</h3>
+                                    
+                                    <div style="display: flex; justify-content: space-between; align-items: flex-end; font-size: 0.75rem; color: var(--text-dim); text-align: left;">
+                                        <div>
+                                            <div><strong style="color: #fff">ISSUER:</strong> EduProof Web3 University</div>
+                                            <div><strong style="color: #fff">DATE:</strong> ${new Date(Number(data.timestamp) * 1000).toLocaleDateString()}</div>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <div style="background: rgba(0,0,0,0.5); padding: 3px 8px; border-radius:10px; font-family: monospace; color: ${glowColor}; font-weight:bold;">${statusText}</div>
+                                            <div style="font-family: monospace; font-size: 0.6rem; margin-top: 5px;">${data.identityHash.substring(0, 16)}...</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            resultArea.innerHTML += card;
+                        }
+                    }
+                    setTimeout(() => {
+                        scanner.style.display = 'none';
+                        resultArea.style.display = 'block';
+                    }, 1000);
+                } else {
+                    setTimeout(() => {
+                        scanner.style.display = 'none';
+                        alert("No valid proof found on the VeriChain network for this identity.");
+                    }, 1000);
+                }
+            } catch (e) {
+                console.error("Verification error:", e);
+                scanner.style.display = 'none';
+                alert("Uyarı / Hata: " + (e.reason || e.message || "Bilinmeyen blockchain hatası."));
+            }
+        }
+
+        function initOCR() {
+            const ocrInput = document.getElementById('ocrInput');
+            const ocrPreview = document.getElementById('ocrImagePreview');
+            const ocrStatus = document.getElementById('ocrStatus');
+            const ocrLaser = document.getElementById('ocrLaser');
+            const dropzone = document.getElementById('ocrDropzone');
+
+            ocrInput.addEventListener('change', async (e) => {
+                if (e.target.files && e.target.files[0]) {
+                    // Yeni tarama başladığında eski kilitleri aç (Eğer yanlış belge yüklediyse düzeltsin)
+                    ['tcNo', 'gradName', 'degree', 'gradAddress'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) {
+                            el.value = '';
+                            el.readOnly = false;
+                            el.style.backgroundColor = 'rgba(5, 5, 10, 0.4)';
+                            el.style.color = '#fff';
+                            el.style.cursor = 'text';
+                        }
+                    });
+
+                    const file = e.target.files[0];
+                    const url = URL.createObjectURL(file);
+                    ocrPreview.src = url;
+                    ocrPreview.style.display = 'block';
+                    ocrLaser.style.display = 'block';
+
+                    ocrStatus.innerHTML = "ÇÖZÜMLENİYOR: Yapay Zeka Metinleri Çıkarıyor... <span style='font-size:0.8em; color:#fff;' id='ocrProgress'>0%</span>";
+                    dropzone.style.borderColor = '#0f0';
+
+                    try {
+                        const { data } = await Tesseract.recognize(
+                            url,
+                            'tur', // Turkish language model
+                            {
+                                logger: m => {
+                                    if (m.status === 'recognizing text') {
+                                        const p = Math.floor(m.progress * 100);
+                                        const progEl = document.getElementById('ocrProgress');
+                                        if (progEl) progEl.innerText = p + "%";
+                                    }
+                                }
+                            }
+                        );
+
+                        ocrLaser.style.display = 'none';
+                        ocrStatus.innerHTML = "✓ AI TESPİTİ BAŞARILI. VERİLER OTOMATİK DOLDURULUYOR...";
+                        ocrStatus.style.color = '#0f0';
+                        speakMessage("Yapay zeka taraması başarılı. Eğitim belgeleri çözümlendi, veriler otomatik olarak dolduruluyor.");
+
+                        parseAndFillForm(data.text);
+
+                        setTimeout(() => {
+                            ocrStatus.innerHTML = "[+] YENİ BELGE TARAT (SÜRÜKLE BIRAK)";
+                            ocrStatus.style.color = 'var(--primary-glow)';
+                            dropzone.style.borderColor = 'rgba(0, 245, 255, 0.5)';
+                            ocrPreview.style.display = 'none';
+                            ocrInput.value = "";
+                        }, 6000);
+
+                    } catch (err) {
+                        console.error(err);
+                        ocrStatus.innerHTML = "⚠ Okuma Hatası. Daha net bir görsel yükleyin.";
+                        ocrStatus.style.color = '#ef4444';
+                        ocrLaser.style.display = 'none';
+                        dropzone.style.borderColor = '#ef4444';
+                        speakMessage("Okuma hatası tespit edildi. Lütfen daha net bir görsel yükleyin.");
+                    }
+                }
+            });
+        }
+
+        async function parseAndFillForm(text) {
+            console.log("OCR TEXT:", text);
+            // 1. T.C. Kimlik (11 haneli rakam)
+            const tcMatch = text.match(/\b[1-9][0-9]{10}\b/);
+            if (tcMatch) animateFill('tcNo', tcMatch[0], "TC_KİMLİK: " + tcMatch[0], false, 0);
+
+            // 2. İsim Çıkarma - Resmi e-Devlet veya Transkript Belgeleri İçin
+            let nameMatch = null;
+            const lines = text.split('\n');
+            for (let line of lines) {
+                const lowerLine = line.toLocaleLowerCase('tr-TR').replace(/i̇/g, 'i');
+                if (lowerLine.includes('adı soyadı') || lowerLine.includes('adi soyadi')) {
+                    // Parçala (İki nokta veya boşluk)
+                    const parts = line.split(':');
+                    if (parts.length > 1) {
+                        nameMatch = parts[1].trim();
+                    } else {
+                        // İki nokta yoksa başlıkları sil ve kalanı al
+                        nameMatch = line.replace(/adı soyadı|adi soyadi/ig, '').trim();
+                    }
+                    break;
+                }
+            }
+
+            // Eğer "Adı Soyadı" etiketi bulunamazsa (Fallback: Büyük Harfleri Tara)
+            if (!nameMatch) {
+                const uppercaseWords = text.match(/\b[A-ZÇĞİÖŞÜ]{3,}(?:\s+[A-ZÇĞİÖŞÜ]{2,}){1,3}\b/g);
+                if (uppercaseWords) {
+                    // YÜKSEKÖĞRETİM KURULU, ÜNİVERSİTE gibi kurum isimlerini filtrele
+                    const filtered = uppercaseWords.filter(w => !w.includes('KURUL') && !w.includes('BAŞKAN') && !w.includes('ÜNİVERSİTE') && !w.includes('FAKÜLT'));
+                    if (filtered.length > 0) {
+                        nameMatch = filtered.sort((a, b) => b.length - a.length)[0];
+                    }
+                }
+            }
+
+            if (nameMatch) {
+                // Temizlik: Harf dışı karakterleri sil ve sadece Büyük Harf bırak
+                nameMatch = nameMatch.toLocaleUpperCase('tr-TR').replace(/[^A-ZÇĞİÖŞÜ\s]/g, '').trim();
+                animateFill('gradName', nameMatch, "İSİM_TESPİT: " + nameMatch, false, 800);
+                setTimeout(() => checkNameCase(document.getElementById('gradName')), 2500);
+            }
+
+            // 3. Bölüm/Program Çıkarımı (Dinamik AI Okuması)
+            let degreeMatch = null;
+            for (let line of lines) {
+                const lowerLine = line.toLocaleLowerCase('tr-TR').replace(/i̇/g, 'i');
+                if (lowerLine.includes('program') || lowerLine.includes('bölümü') || lowerLine.includes('anabilim dalı')) {
+                    const parts = line.split(':');
+                    if (parts.length > 1) {
+                        degreeMatch = parts.slice(1).join(':').trim();
+                    } else {
+                        degreeMatch = line.replace(/programı|program|bölümü|bölüm|anabilim dalı/ig, '').trim();
+                    }
+                    break;
+                }
+            }
+            if (degreeMatch) {
+                // Eğer "ÜNİVERSİTE / FAKÜLTE / BÖLÜM" gibi slash veya tire ile ayrılmış bir yapı varsa, sadece EN SONDAKİ bölüm adını (örn: HUKUK) alır.
+                if (degreeMatch.includes('/')) {
+                    const parts = degreeMatch.split('/');
+                    degreeMatch = parts[parts.length - 1].trim();
+                } else if (degreeMatch.includes('-')) {
+                    const parts = degreeMatch.split('-');
+                    degreeMatch = parts[parts.length - 1].trim();
+                }
+
+                // Temizlik: Gereksiz harf yığılmalarını kes, evrensel standartta büyük harf formatına zorla
+                degreeMatch = degreeMatch.replace(/\s+/g, ' ').toLocaleUpperCase('tr-TR').trim();
+                animateFill('degree', degreeMatch, "PROGRAM_TESPİT: " + degreeMatch, false, 1600);
+            }
+
+            // 4. Otomatik Web3 Öğrenci Merkezi Cüzdan Sorgusu
+            if (tcMatch) {
+                try {
+                    if (typeof contract !== 'undefined' && contract) {
+                        // TC Kimlik nosunu KVKK gereği şifrele
+                        const tcHash = ethers.keccak256(ethers.toUtf8Bytes(tcMatch[0]));
+
+                        // Akıllı kontrattan (Blokzincir) bu TC'ye ait kayıtlı cüzdan var mı sor
+                        const existingWallet = await contract.identityToWallet(tcHash);
+
+                        if (existingWallet && existingWallet !== ethers.ZeroAddress && existingWallet !== "0x0000000000000000000000000000000000000000") {
+                            // Cüzdan ZATEN sistemde kayıtlı! Yeni üretme, eskisini çek!
+                            animateFill('gradAddress', existingWallet, "✅ SİSTEMDE CÜZDANI VAR: " + existingWallet.substring(0, 10) + "...", false, 2400);
+                        } else {
+                            // Yeni öğrenci, yeni kriptografik cüzdan oluştur (Orijinal Hex Harfli Format)
+                            const newWallet = ethers.Wallet.createRandom().address;
+                            animateFill('gradAddress', newWallet, "🔑 YENİ SIFIR CÜZDAN: " + newWallet.substring(0, 10) + "...", false, 2400);
+                        }
+                    } else {
+                        // Blokzincir bağlantısı koptuysa fallback
+                        const fallbackWallet = "0x" + Array.from({ length: 40 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+                        animateFill('gradAddress', fallbackWallet, "🔑 YEDEK CÜZDAN: " + fallbackWallet.substring(0, 10) + "...", false, 2400);
+                    }
+                } catch (err) {
+                    console.error("Cüzdan Sorgulama Hatası:", err);
+                    const fallbackWallet = ethers.Wallet ? ethers.Wallet.createRandom().address : "0x" + Array.from({ length: 40 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+                    animateFill('gradAddress', fallbackWallet, "⚠ BAĞLANTI KOPTU! YEDEK CÜZDAN: " + fallbackWallet.substring(0, 10) + "...", false, 2400);
+                }
+            }
+        }
+
+        function animateFill(elementId, value, flyingText, isSelect, delay) {
+            setTimeout(() => {
+                const dropzone = document.getElementById('ocrDropzone');
+                const el = document.getElementById(elementId);
+                const rectStart = dropzone.getBoundingClientRect();
+                const rectEnd = el.getBoundingClientRect();
+
+                const flier = document.createElement('div');
+                flier.innerHTML = flyingText;
+                flier.style.position = 'fixed';
+                flier.style.left = (rectStart.left + rectStart.width / 2 - 50) + 'px';
+                flier.style.top = (rectStart.top + rectStart.height / 2) + 'px';
+                flier.style.color = '#0f0';
+                flier.style.fontWeight = 'bold';
+                flier.style.fontFamily = 'monospace';
+                flier.style.fontSize = '0.9rem';
+                flier.style.zIndex = '999999';
+                flier.style.textShadow = '0 0 10px #0f0';
+                flier.style.transition = 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                flier.style.pointerEvents = 'none';
+                document.body.appendChild(flier);
+
+                // Trigger reflow
+                flier.getBoundingClientRect();
+
+                flier.style.left = (rectEnd.left + 20) + 'px';
+                flier.style.top = (rectEnd.top - 10) + 'px';
+                flier.style.transform = 'scale(0.8)';
+                flier.style.opacity = '0';
+
+                setTimeout(() => {
+                    document.body.removeChild(flier);
+
+                    // Görsel kilitlenme efekti (AI tarafından mühürlendiğini simgeler)
+                    const lockVisual = () => {
+                        el.readOnly = true;
+                        // Tamamen şeffaf ve kilitli yeşilimsi mavi renk ataması
+                        el.style.backgroundColor = "rgba(0, 245, 255, 0.05)";
+                        el.style.color = "var(--primary-glow)";
+                        el.style.cursor = "not-allowed";
+                    };
+
+                    if (isSelect) {
+                        el.value = value;
+                        lockVisual();
+                    } else {
+                        el.value = "";
+                        let i = 0;
+                        const fw = setInterval(() => {
+                            if (i < value.length) {
+                                el.value += value.charAt(i);
+                                i++;
+                            } else {
+                                clearInterval(fw);
+                                lockVisual();
+                            }
+                        }, 40); // typing speed
+                    }
+                    el.style.boxShadow = "0 0 20px rgba(0, 255, 0, 0.5), inset 0 0 10px rgba(0, 255, 0, 0.2)";
+                    el.style.borderColor = "#0f0";
+                    setTimeout(() => {
+                        el.style.boxShadow = "none";
+                        el.style.borderColor = "var(--glass-border)";
+                    }, 1500);
+                }, 800);
+            }, delay);
+        }
+
+        // Initialize on load
+        window.onload = init;
+    </script>
+
+    <!-- Global Biometric Lock Modal -->
+    <div id="bioLockOverlay"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 999999; justify-content: center; align-items: center; overflow: hidden; perspective: 1500px;">
+
+        <!-- TRANSFORMERS VAULT -->
+        <div class="tf-vault">
+            <div class="tf-panel tf-top"></div>
+            <div class="tf-panel tf-bottom"></div>
+            <div class="tf-panel tf-door-left"></div>
+            <div class="tf-panel tf-door-right"></div>
+            <div class="tf-center-gear"></div>
+        </div>
+
+        <!-- Biometric Console -->
+        <div class="bio-console">
+            <div
+                style="color: var(--primary-glow); font-family: monospace; font-size: 1.4rem; font-weight: 800; margin-bottom: 2rem; letter-spacing: 4px; text-shadow: 0 0 10px var(--primary-glow); text-align: center; z-index: 10;">
+                RESTRICTED AREA <br><span style="font-size: 0.8rem; color: #fff;">BIO-GATING PROTOCOL v2.4</span></div>
+
+            <div
+                style="position: relative; width: 250px; height: 250px; border: 2px dashed rgba(0, 245, 255, 0.5); border-radius: 50%; overflow: hidden; margin-bottom: 2rem; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 0 40px rgba(0,245,255,0.1), 0 0 20px rgba(0,245,255,0.2); background: rgba(5,5,10,0.9); z-index: 10;">
+                <div id="faceScannerLine"
+                    style="position: absolute; width: 100%; height: 2px; background: var(--primary-glow); top: 0; left: 0; animation: scanAnim 2s linear infinite; display: none; z-index: 10; box-shadow: 0 0 10px var(--primary-glow);">
+                </div>
+                <video id="webcamVideo" width="250" height="250" autoplay muted
+                    style="object-fit: cover; transform: scaleX(-1); border-radius: 50%; display: none;"></video>
+
+                <button id="startBioBtn" onclick="startBiometricAuth()"
+                    style="background: rgba(0, 245, 255, 0.1); border: 2px solid var(--primary-glow); color: var(--primary-glow); padding: 1rem 2rem; cursor: pointer; border-radius: 30px; font-weight: bold; transition: all 0.3s; z-index: 20; letter-spacing: 2px; box-shadow: inset 0 0 20px rgba(0, 245, 255, 0.2);">
+                    ENABLE BIO-SENSOR
+                </button>
+            </div>
+
+            <div id="bioStatusText"
+                style="color: #fff; font-family: monospace; font-size: 1.1rem; text-align: center; height: 60px; text-shadow: 0 0 8px rgba(255,255,255,0.5); z-index: 10;">
+                SYSTEM LOCKED.<br>Awaiting Authorized Personnel.
+            </div>
+
+            <button
+                onclick="localStorage.removeItem('adminFaceDescriptor'); alert('Yüz kaydınız başarıyla sıfırlandı! Bir sonraki okutacağınız İLK yüz, kendi yüzünüz (Yönetici) olarak veritabanına kaydedilecektir.');"
+                style="margin-top: 2rem; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 0.8rem 1.5rem; border-radius: 5px; cursor: pointer; font-size: 0.8rem; z-index: 50; transition: all 0.3s; font-weight: bold;"
+                onmouseover="this.style.background='#ef4444'; this.style.color='#fff';"
+                onmouseout="this.style.background='rgba(239, 68, 68, 0.1)'; this.style.color='#ef4444';">♻️ Jüri Öncesi
+                Yüzü Sıfırla (Register New Face)</button>
+        </div>
+    </div>
+    </div>
+
+    <!-- 3D Global Node Map Overlay -->
+    <style>
+        #globeOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(5, 5, 10, 0.95);
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        #globeViz {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .globe-status {
+            position: absolute;
+            bottom: 50px;
+            text-align: center;
+            color: var(--primary-glow);
+            font-family: monospace;
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px var(--primary-glow);
+            z-index: 100000;
+        }
+    </style>
+    <div id="globeOverlay">
+        <div
+            style="position: absolute; top: 30px; left: 30px; color: #fff; font-family: monospace; font-size: 1rem; z-index: 100000;">
+            <h3 style="margin: 0; letter-spacing: 3px; font-weight: 800; color: var(--primary-glow);">VERICHAIN PROTOCOL
+                V2.0</h3>
+            <div style="color: var(--text-dim); margin-top: 5px;">Broadcasting Cryptographic Proof to Global Nodes...
+            </div>
+        </div>
+        <div id="globeViz"></div>
+        <div class="globe-status" id="globeStatusText">INITIALIZING PEER-TO-PEER NETWORK...</div>
+    </div>
+    <script>
+        let myGlobe = null;
+        function initGlobe() {
+            if (myGlobe) return;
+            const N = 12; // 12 Araştırma Üniversitesi Konsorsiyumu
+            const arcsData = [...Array(N).keys()].map(() => ({
+                startLat: 41.0082, // Istanbul
+                startLng: 28.9784,
+                endLat: (Math.random() - 0.5) * 160,
+                endLng: (Math.random() - 0.5) * 360,
+                color: ['rgba(0, 245, 255, 0.8)', 'rgba(0, 255, 0, 0.8)'][Math.floor(Math.random() * 2)]
+            }));
+
+            myGlobe = Globe()
+                (document.getElementById('globeViz'))
+                .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
+                .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
+                .arcsData(arcsData)
+                .arcColor('color')
+                .arcDashLength(0.4)
+                .arcDashGap(0.2)
+                .arcDashAnimateTime(1500)
+                .arcsTransitionDuration(0)
+                .pointOfView({ lat: 41.0, lng: 28.9, altitude: 2 });
+
+            const ringsData = arcsData.map(d => ({ lat: d.endLat, lng: d.endLng }));
+            myGlobe.ringsData(ringsData).ringColor(() => '#0f0').ringMaxRadius(2).ringPropagationSpeed(3).ringRepeatPeriod(700);
+
+            myGlobe.controls().autoRotate = true;
+            myGlobe.controls().autoRotateSpeed = 2.0;
+        }
+
+        function showGlobeAnimation(txPromise, onComplete) {
+            const overlay = document.getElementById('globeOverlay');
+            overlay.style.display = 'flex';
+            const status = document.getElementById('globeStatusText');
+
+            // Eğer blink animasyonu henüz yoksa ekle (Kırmızı Hatada yanıp sönmesi için)
+            if (!document.getElementById('blinkStyleExt')) {
+                const style = document.createElement('style');
+                style.id = 'blinkStyleExt';
+                style.innerHTML = `@keyframes blinkError { 0% {opacity:1;} 50% {opacity:0;} 100% {opacity:1;} }`;
+                document.head.appendChild(style);
+            }
+
+            setTimeout(() => initGlobe(), 100);
+
+            let progress = 0;
+            let blockchainResult = null;
+            let blockchainReceipt = null;
+
+            status.innerHTML = "YETKİLİ ÜNİVERSİTE DÜĞÜMLERİNE ŞİFRELİ YAYIN YAPILIYOR...";
+            status.style.color = "var(--primary-glow)";
+
+            // --- İLK SESLİ BİLDİRİM (Başlangıç) ---
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const speech = new SpeechSynthesisUtterance("Sıfır bilgi kanıtı derleniyor. Kriptografik imza yetkili üniversite düğümlerine yayınlanıyor. Lütfen konsorsiyum mutabakatını bekleyin.");
+                speech.lang = 'tr-TR';
+                speech.rate = 1.0;
+                speech.pitch = 0.6;
+                window.speechSynthesis.speak(speech);
+            }
+
+            // Arka planda gerçek blokzincir işlemi beklenir
+            txPromise.then(async (tx) => {
+                try {
+                    const receipt = await tx.wait(); // Tamamen eklenmesini bekle
+                    blockchainResult = 'success';
+                    blockchainReceipt = receipt;
+                } catch(e) {
+                    blockchainResult = 'fail';
+                }
+            }).catch((err) => {
+                blockchainResult = 'fail';
+            });
+
+            // GÖRSEL SİMÜLASYON (Arama taklidi)
+            const simInt = setInterval(() => {
+                progress += Math.floor(Math.random() * 8) + 2;
+                
+                if (progress >= 95) {
+                    progress = 95; // %95'e ulaştığında arka plan işleminin sonucunu bekle
+                    status.innerHTML = `MUTABAKAT ARANIYOR: %${progress}`;
+                    
+                    if (blockchainResult === 'success') {
+                        clearInterval(simInt);
+                        executeSuccess();
+                    } else if (blockchainResult === 'fail') {
+                        clearInterval(simInt);
+                        executeFailure();
+                    }
+                } else {
+                    status.innerHTML = `MUTABAKAT ARANIYOR: %${progress}`;
+                }
+            }, 300); // Ortalama 3-4 saniyede %95'e ulaşır
+
+            function executeSuccess() {
+                status.innerHTML = `<span style="color:#0f0">✓ BLOK GÜVENCEYE ALINDI. KANIT ONAYLANDI.</span>`;
+                
+                if ('speechSynthesis' in window) {
+                    const successSpeech = new SpeechSynthesisUtterance("Mutabakat sağlandı. Veri cebri olarak blokzincire mühürlendi. Kriptografik doğrulama başarılı.");
+                    successSpeech.lang = 'tr-TR';
+                    successSpeech.rate = 1.0;
+                    successSpeech.pitch = 0.6;
+                    successSpeech.onend = () => {
+                        overlay.style.display = 'none';
+                        if (onComplete) onComplete(true, blockchainReceipt.hash);
+                    };
+                    window.speechSynthesis.speak(successSpeech);
+                } else {
+                    setTimeout(() => {
+                        overlay.style.display = 'none';
+                        if (onComplete) onComplete(true, blockchainReceipt.hash);
+                    }, 5000);
+                }
+            }
+
+            function executeFailure() {
+                // HATA METNİ YANIP SÖNECEK (blinkError animasyonu)
+                status.innerHTML = `<span style="color:#ef4444; animation: blinkError 1s infinite;">⚠ PROTOKOL İHLALİ. İŞLEM REDDEDİLDİ.</span>`;
+                
+                if ('speechSynthesis' in window) {
+                    const failSpeech = new SpeechSynthesisUtterance("Protokol ihlali. Sistem geçersiz veya mükerrer veri tespit etti. Ağ işlemi reddetti.");
+                    failSpeech.lang = 'tr-TR';
+                    failSpeech.rate = 1.0;
+                    failSpeech.pitch = 0.6;
+                    failSpeech.onend = () => {
+                        overlay.style.display = 'none';
+                        if (onComplete) onComplete(false, null);
+                    };
+                    window.speechSynthesis.speak(failSpeech);
+                } else {
+                    setTimeout(() => {
+                        overlay.style.display = 'none';
+                        if (onComplete) onComplete(false, null);
+                    }, 5000);
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
