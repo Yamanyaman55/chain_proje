@@ -1,7 +1,0 @@
-version: '3'
-services:
-  blockchain:
-    image: node:18-slim
-    ports:
-      - "8545:8545"
-    command: ["sh", "-c", "npx ganache -h 0.0.0.0 -m 'verichain protocol secret mnemonic' -i 5777"]
